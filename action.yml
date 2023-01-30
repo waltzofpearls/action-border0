@@ -17,6 +17,9 @@ runs:
         curl https://download.border0.com/linux_amd64/border0 -o /usr/local/bin/border0
         chmod +x /usr/local/bin/border0
         border0 version check
+    - name: Print some info
+      shell: bash
+      run: whoami
     - name: Create and connect an ssh socket
       shell: bash
       run: |
