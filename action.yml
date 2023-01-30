@@ -33,7 +33,7 @@ runs:
       shell: bash
       run: |
         ssh_username=$(whoami)
-        socket_dns_name=$(border0 socket ls | grep "${{ env.SOCKET_NAME }}-" | cut -d '│' -f4 | xargs)
+        socket_dns_name=$(border0 socket ls | grep "${{ env.SOCKET_NAME }}-" | awk -F '│' '{print $4}' | xargs)
         echo "border0 client ssh $ssh_username@$socket_dns_name"
       env:
         BORDER0_ADMIN_TOKEN: ${{ inputs.access-token }}
