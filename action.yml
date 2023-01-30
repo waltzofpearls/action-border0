@@ -26,7 +26,7 @@ runs:
     - name: Create an ssh socket
       shell: bash
       run: |
-        border0 socket create --type ssh --name gh-action-$random_numbers
+        border0 socket create --type ssh --name ${{ env.SOCKET_NAME }}
       env:
         BORDER0_ADMIN_TOKEN: ${{ inputs.access-token }}
     - name: Print the command that can ssh into github action VM
@@ -40,6 +40,6 @@ runs:
     - name: Connect an ssh socket
       shell: bash
       run: |
-        border0 socket connect gh-action-$random_numbers --sshserver
+        border0 socket connect ${{ env.SOCKET_NAME }} --sshserver
       env:
         BORDER0_ADMIN_TOKEN: ${{ inputs.access-token }}
