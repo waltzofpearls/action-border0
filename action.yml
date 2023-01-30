@@ -17,33 +17,19 @@ runs:
         curl https://download.border0.com/linux_amd64/border0 -o /usr/local/bin/border0
         chmod +x /usr/local/bin/border0
         border0 version check
-    - name: Set socket name and username env vars
-      shell: bash
-      run: |
-        random_numbers=$((1000 + RANDOM % 9999))
-        socket_name="gh-action-$random_numbers"
-        echo "SOCKET_NAME=$socket_name" >> $GITHUB_ENV
     - name: Create an ssh socket
       shell: bash
       env:
         BORDER0_ADMIN_TOKEN: ${{ inputs.access-token }}
       run: |
-        border0 socket create --type ssh --name ${{ env.SOCKET_NAME }}
-    - name: Print the command that can ssh into github action VM
-      shell: bash
-      env:
-        BORDER0_ADMIN_TOKEN: ${{ inputs.access-token }}
-      run: |
+        random_numbers=$((1000 + RANDOM % 9999))
+        socket_name="gh-action-$random_numbers"
+        border0 socket create --type ssh --name $socket_name
         ssh_username=$(whoami)
-        socket_dns_name=$(border0 socket ls | grep "${{ env.SOCKET_NAME }}-" | awk -F '│' '{print $4}' | xargs)
+        socket_dns_name=$(border0 socket ls | grep "$socket_name-" | awk -F '│' '{print $4}' | xargs)
         echo "Use this command to ssh into this github action VM:"
         echo "border0 client ssh $ssh_username@$socket_dns_name"
-    - name: Connect an ssh socket
-      shell: bash
-      env:
-        BORDER0_ADMIN_TOKEN: ${{ inputs.access-token }}
-      run: |
-        border0 socket connect ${{ env.SOCKET_NAME }} --sshserver
+        border0 socket connect $socket_name --sshserver
     - name: Cleanup
       shell: bash
       env:
