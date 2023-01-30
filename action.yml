@@ -1,6 +1,13 @@
 name: Debugging with border0
 branding:
   icon: terminal
+
+inputs:
+  access-token:
+    description: Border0 access token
+    required: true
+    type: string
+
 runs:
   using: composite
   steps:
@@ -9,4 +16,11 @@ runs:
       run: |
         curl https://download.border0.com/linux_amd64/border0 -o /usr/local/bin/border0
         chmod +x /usr/local/bin/border0
-        border0
+        border0 version check
+    - name: Write access token file
+      shell: bash
+      run: |
+        border0 socket create --type ssh --name sshtest
+        border0 socket connect sshtest --sshserver
+      env:
+        BORDER0_ADMIN_TOKEN: ${{ inputs.access-token }}
