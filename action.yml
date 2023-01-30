@@ -24,11 +24,13 @@ runs:
       run: |
         random_numbers=$((1000 + RANDOM % 9999))
         socket_name="gh-action-$random_numbers"
-        border0 socket create --type ssh --name $socket_name
         ssh_username=$(whoami)
+        border0 socket create --type ssh --name $socket_name
         socket_dns_name=$(border0 socket ls | grep "$socket_name-" | awk -F '│' '{print $4}' | xargs)
+        echo
         echo "Use this command to ssh into this github action VM:"
-        echo "border0 client ssh $ssh_username@$socket_dns_name"
+        echo "$> border0 client ssh $ssh_username@$socket_dns_name"
+        echo
         border0 socket connect $socket_name --sshserver
     - name: Cleanup
       shell: bash
